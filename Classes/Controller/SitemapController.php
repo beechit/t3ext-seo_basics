@@ -126,7 +126,7 @@ class SitemapController {
 			if (isset($this->usedUrls[$url])) {
 				continue;
 			}
-			$lastmod = ($item['SYS_LASTCHANGED'] ? $item['SYS_LASTCHANGED'] : $item['crdate']);
+			$lastmod = ($item['SYS_LASTCHANGED'] ? $item['SYS_LASTCHANGED'] : $item['tstamp']);
 
 				// format date, see http://www.w3.org/TR/NOTE-datetime for possible formats
 			$lastmod = date('c', $lastmod);
@@ -407,7 +407,7 @@ class SitemapController {
 	 */
 	protected function fetchPagesFromTreeStructure($id) {
 		$depth = 50;
-		$additionalFields = 'uid,pid,doktype,shortcut,crdate,SYS_LASTCHANGED,shortcut_mode,l18n_cfg';
+		$additionalFields = 'uid,pid,doktype,shortcut,crdate,tstamp,SYS_LASTCHANGED,shortcut_mode,l18n_cfg';
 
 		// Initializing the tree object
 		$treeStartingRecord = $this->getFrontendController()->sys_page->getRawRecord('pages', $id, $additionalFields);
