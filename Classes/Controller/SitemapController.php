@@ -83,12 +83,13 @@ class SitemapController {
 
 
 		$excludedPageUids = GeneralUtility::trimExplode(',', $this->sitemapConfiguration['excludePages'], TRUE);
+		$shortCuts = array();
 		foreach ($treeRecords as $row) {
 			$item = $row['row'];
 
 			// don't render spacers, sysfolders etc, and the ones that have the
 			// "no_search" checkbox
-			if ($item['doktype'] >= 199 || $item['doktype'] == 4 || intval($item['no_search']) == 1) {
+			if ($item['doktype'] >= 199 || intval($item['no_search']) == 1) {
 				continue;
 			}
 
@@ -123,18 +124,31 @@ class SitemapController {
 			}
 			$url = htmlspecialchars($url);
 
-			if (isset($this->usedUrls[$url])) {
+			if (isset($this->usedUrls[$url]) && (int)$item['doktype'] !== 4) {
 				continue;
 			}
+
 			$lastmod = ($item['SYS_LASTCHANGED'] ? $item['SYS_LASTCHANGED'] : $item['tstamp']);
 
 				// format date, see http://www.w3.org/TR/NOTE-datetime for possible formats
 			$lastmod = date('c', $lastmod);
 
-			$this->usedUrls[$url] = array(
+			$linkInfo = array(
 				'url' => $url,
 				'lastmod' => $lastmod
 			);
+			if ((int)$item['doktype'] === 4) {
+				$shortCuts[] = $linkInfo;
+			} else {
+				$this->usedUrls[$url] = $linkInfo;
+			}
+		}
+
+			// add shortcuts that aren't present yet
+		foreach ($shortCuts as $linkInfo) {
+			if (!isset($this->usedUrls[$linkInfo['url']])) {
+				$this->usedUrls[$linkInfo['url']] = $linkInfo;
+			}
 		}
 
 		// check for additional pages
