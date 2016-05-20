@@ -88,7 +88,7 @@ class SitemapController {
 
 			// don't render spacers, sysfolders etc, and the ones that have the
 			// "no_search" checkbox
-			if ($item['doktype'] >= 199 || intval($item['no_search']) == 1) {
+			if ($item['doktype'] >= 199 || $item['doktype'] == 4 || intval($item['no_search']) == 1) {
 				continue;
 			}
 
